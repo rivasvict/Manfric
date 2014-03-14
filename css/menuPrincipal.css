@@ -1,0 +1,246 @@
+/*#coolmenu{
+border: 1px solid black;
+width: 170px;
+background-color: #E6E6E6;
+}
+
+#coolmenu a{
+font: bold 13px Verdana;
+padding: 2px;
+padding-left: 4px;
+display: block;
+width: 100%;
+color: black;
+text-decoration: none;
+border-bottom: 1px solid black;
+}
+
+html>body #coolmenu a{
+width: auto;
+}
+
+#coolmenu a:hover{
+background-color: black;
+color: white;
+}
+
+#f:hover #float{ display: block;}
+
+#float{
+display: none;
+}
+
+#float:hover{
+display: block;
+}*/
+
+/*#Reg:hover #float{ display:block;}
+
+#float{
+display:none;
+}*/
+
+.floatMenu{
+  display: none;
+  background: #C3C4C4;
+  color: #333;
+  font-family: sans-serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 20px;
+  border-radius: 3px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,.15);
+  position: absolute;
+  margin-top: 60px;
+}
+
+.floatMenu table {
+  border-collapse: collapse;
+}
+
+.floatMenu table tr:first-child td {
+  border: 0;
+}
+
+.floatMenu table tr td {
+  padding: 10px;
+  padding-left: 10px;
+  border-top: 1px dotted #999;
+  color: #666;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #ddd;
+  cursor: hand;
+  width: 80px;
+}
+
+.floatMenu table tr:last-child td {
+  border-radius: 0 0 5px 5px;
+}
+
+.floatMenu table tr td:hover {
+  background: #999;
+  color: #444;
+  text-shadow: 1px 1px 1px #bbb;
+}
+
+.cantAppared{
+display:none;
+}
+
+.menuP{
+float:left;
+width:100px;
+height:auto;
+margin-left: 5px;
+}
+
+#invI:hover #invIFloat { display:block;}
+
+#register:hover #registerFloat	{ display:block;}
+
+#order:hover #orderFloat	{ display:block;}
+
+#registerFloat:hover #registerFloat	{ display:block;}
+
+#report:hover #reportFloat		{ display:block;}
+
+#reportFloat:hover #reportFloat		{ display:block;}
+
+#close{
+margin-left:500px;
+}
+
+#menuPanel {
+  background-color:green;
+  height:50px;
+  color: #f5f5f5;
+  text-shadow: 1px 1px 1px #444;
+  font-weight: bold;
+  font-family: sans-serif;
+  padding: 10px;
+  border: 1px solid #999;
+  border-radius: 5px 5px 0 0;
+  border-bottom: 2px solid #C3c4c4;
+}
+
+#menuPanel .menuP .menuTitle{
+  width: 100px;
+  height: 50px;
+  padding: 5px;
+  padding-top: 6px;
+  float: left;
+}
+
+#previewV{
+position:relative;
+background-color:blue;
+margin-left:200px;
+margin-right:200px;
+margin-top:50px;
+margin-bottom:600px;
+width:auto;
+height:400px;
+display:none;
+}
+
+#register {
+  width: 100px;
+}
+
+#orderV{
+display:none;
+}
+
+#orderA{
+display:none;
+}
+
+#orderAA{
+display:none;
+}
+
+#orderB{
+
+}
+
+#orderC{
+
+}
+
+.viewOrder{
+display:none;
+}
+
+#registerDiv{
+
+}
+
+.plusForm{
+
+}
+
+.sForm{
+display:none;
+}
+
+/*.cForm{
+display:none;
+}*/
+
+#selectedProduct{
+display:none;
+}
+
+#order_Liquid{
+position:relative;
+background-color:yellow;
+margin-left:200px;
+margin-right:200px;
+margin-top:50px;
+margin-bottom:600px;
+width:auto;
+height:400px;
+display:none;
+}
+
+.hidde_order{
+display:none;
+}
+
+#order_liquid_message{
+position:relative;
+background-color:blue;
+margin-left:200px;
+margin-right:200px;
+margin-top:50px;
+margin-bottom:600px;
+width:auto;
+height:400px;
+display:none;
+}
+
+#content {
+  width: 100%;
+  top: 100px;
+  background: #f1f1f1;
+  float: left; 
+}
+
+#content #registerDiv {
+  with: 100%;
+  padding: 10px;
+} 
+
+#content #registerDiv table {
+  font-family: sans-serif;
+  color: #666;
+  font-size: 16px;
+}
+
+#debugg {
+  width: 100%;
+  background: #f7f7f7;
+  float: left;
+  padding: 10px 0;
+}

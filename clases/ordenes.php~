@@ -1,0 +1,403 @@
+<? 
+
+class ordenes{
+
+function insertOrder($nombreProducto,$Cantidad,$comentariosCreacion,$formula){
+	$dateC = @date("d-m-Y H:i:s");
+$date = explode(" ", $dateC);
+$aDate = explode("-", $date[0]);
+$Ano = $aDate[2];
+$Mes = $aDate[1];
+	$Estado = "A";
+	$CodigoProducto = productos::selectId($nombreProducto);
+	$sql = "INSERT INTO OrdenProduccion (CodigoProducto,Fecha,Cantidad,Estado,Mes,Ano,comentariosCreacion,Formula) 
+																														VALUES (".$CodigoProducto[0][0].",'$dateC',$Cantidad,'$Estado','$Mes',$Ano,'$comentariosCreacion','$formula')";
+	$result = executeSQL($sql);
+}
+
+function selectOrder($mes,$ano,$estado,$tipo){
+/*$dateC = @date("d-m-Y H:i:s");
+$date = explode(" ", $dateC);
+$aDate = explode("-", $date[0]);
+$Ano = $aDate[2];
+$Mes = $aDate[1];*/
+//echo "prueba / ";
+	$meses["Enero"]=1;
+	$meses["Febrero"]=2;
+	$meses["Marzo"]=3;
+	$meses["Abril"]=4;
+	$meses["Mayo"]=5;
+	$meses["Junio"]=6;
+	$meses["Julio"]=7;
+	$meses["Agosto"]=8;
+	$meses["Septiembre"]=9;
+	$meses["Octubre"]=10;
+	$meses["Noviembre"]=11;
+	$meses["Diciembre"]=12;
+	if(($mes=="null")&&($ano=="null")&&($estado=="null")&&($tipo=="null")){
+		//echo "entro";
+		$sqlAno = "SELECT DISTINCT Ano FROM OrdenProduccion";
+		$resultAno = executeSQL($sqlAno);
+		return $resultAno;
+	}
+	if($tipo==1){
+		$sql1 = "SELECT * FROM OrdenProduccion WHERE Mes = ".$meses["$mes"]." AND Ano = $ano";
+		$result1 = executeSQL($sql1);
+		for($i=0;$i<=count($result1)-1;$i++){
+			$sql2 = "SELECT Nombre FROM ProductoT WHERE CodigoProducto = ".$result1[$i][1]."";
+			$result2[$i] = executeSQL($sql2);
+		}
+		$array_Definitivo[0] = $result2;
+		$array_Definitivo[1] = $result1;
+		return $array_Definitivo;
+	}
+	if($tipo==4){
+		$sql1 = "SELECT * FROM OrdenProduccion WHERE Estado = 'A'";
+		$result1 = executeSQL($sql1);
+		for($i=0;$i<=count($result1)-1;$i++){
+			$sql2 = "SELECT Nombre FROM ProductoT WHERE CodigoProducto = ".$result1[$i][1]."";
+			$result2[$i] = executeSQL($sql2);
+		}
+		$array_Definitivo[0] = $result2;
+		$array_Definitivo[1] = $result1;
+		return $array_Definitivo;
+	}
+	//Para éste caso el valor de la variable estado que entra a la función se toma como el Id de producto a consultar
+	if(($tipo==5)&&($estado)){
+		$sql1 = "SELECT * FROM OrdenProduccion WHERE codigoOrdenProduccion = $estado";
+		$result1 = executeSQL($sql1);
+		for($i=0;$i<=count($result1)-1;$i++){
+			$sql2 = "SELECT Nombre FROM ProductoT WHERE CodigoProducto = ".$result1[$i][1]."";
+			$result2[$i] = executeSQL($sql2);
+		}
+		$array_Definitivo[0] = $result2;
+		$array_Definitivo[1] = $result1;
+		return $array_Definitivo;
+	}
+}
+
+function seleccionar_id_de_material_en_orden_registrada($id){
+		//Consulta a fecha de sistema {	
+	$dateC = @date("d-m-Y H:i:s");
+	$date = explode(" ", $dateC);
+	$aDate = explode("-", $date[0]);
+	$Ano = $aDate[2];
+	$Messtring = $aDate[1];
+	if($Messtring<=9){
+		$Mes = $Messtring[1];
+	}else{
+		$Mes = $Messtring;
+	}
+	// }
+	// Asignación de vector meses con los meses del año
+	$meses[0]="null";
+	$meses[1]="Enero";
+	$meses[2]="Febrero";
+	$meses[3]="Marzo";
+	$meses[4]="Abril";
+	$meses[5]="Mayo";
+	$meses[6]="Junio";
+	$meses[7]="Julio";
+	$meses[8]="Agosto";
+	$meses[9]="Septiembre";
+	$meses[10]="Octubre";
+	$meses[11]="Noviembre";
+	$meses[12]="Diciembre";
+	/*if($Mes=="01"){
+		$Mes = 1;
+	}*/
+//var_dump($Mes);
+
+
+
+
+$existencia_de_enero = insumos::existencia_mes($id,$Mes,$Ano);
+	//var_dump($existencia_de_enero);
+	if(($meses[$Mes]=="Enero")&&($existencia_de_enero==null)){
+		//echo "uno";
+		$Mes = 12;
+		$Ano = $Ano - 1;
+		$flag = 1;
+	}//var_dump($existencia_de_enero);
+		//var_dump($flag);
+		//var_dump($meses[$Mes]);
+	if(($meses[$Mes]!="Enero")&&($existencia_de_enero==null)&&($flag!=1)){
+		//echo "dos";
+		//echo $Mes;
+//var_dump($Mes);
+		$Mes = $Mes - 1;
+	}
+//var_dump($Mes);
+	//var_dump($meses[$Mes]);
+	$sql = "SELECT Cantidad,Formula FROM OrdenProduccion WHERE Estado = 'A' AND Ano = $Ano";
+	//echo $sql;
+	$res1 = executeSQL($sql);
+	//echo $sql;
+	for($i=0;$i<=count($res1)-1;$i++){
+
+
+
+
+
+
+			//var_dump($res1[$i][1]);
+		//echo "<p>".count($res1[$i][1])."</p>";
+	/*var_dump($res1);
+		echo "<p>".$res1[$i][1]."</p>";
+	if($res1[$i][1]==""){
+		return null;
+	}*/
+
+//var_dump($res1[$i][1]);
+
+
+
+
+
+//var_dump($id);
+		$sql1 = "SELECT CodigoInsumo,Cantidad,tipoFormula FROM Formula WHERE CodigoInsumo = $id AND tipoFormula = '".$res1[$i][1]."' AND nuevo = 'si'";
+		//echo $sql1;
+		$res2 = executeSQL($sql1);
+		//var_dump($res2);
+		if(count($res2)==0){
+			$res2 = null;
+		}
+		//var_dump($res2);
+		if($res2!=null){
+			/*echo "<p> de aquí     ";
+			var_dump($res2);
+			echo "    hasta aquí</p>";*/
+			if($salida!=1){
+				$j=0;
+			}
+			$array_acumulativo_cantidades[$j][0] = $res2[0][0];
+			$array_acumulativo_cantidades[$j][1] = $res2[0][1] * $res1[$i][0];
+			//echo "<p> ".$j."</p>";
+			$j++;
+			$salida = 1;
+			/*echo "<p> de aquí     ";
+			var_dump($array_acumulativo_cantidades);
+			echo "    hasta aquí</p>";*/
+		}
+		
+	}
+	//VERIFICAR SI EXISTE ORDEN CON FORMULA QUE POSEA ESE INSUMO
+
+
+
+
+	/*if($array_acumulativo_cantidades!=null){
+		var_dump($array_acumulativo_cantidades);
+		$j=0;
+		for($i=0;$i<=count($array_acumulativo_cantidades)-1;$i++){
+			if($array_acumulativo_cantidades[$i][0]==null){
+				$j++;
+			}
+			if($j==count($array_acumulativo_cantidades)){
+				return null;
+			}
+		}
+	}*/
+
+
+
+
+//-----
+	if($array_acumulativo_cantidades!=null){
+/*echo "<p> de aquí     ";
+		var_dump($array_acumulativo_cantidades);
+		echo "    hasta a$dateC = @date("d-m-Y H:i:s");
+	$date = explode(" ", $dateC);
+	$aDate = explode("-", $date[0]);
+	$Ano = $aDate[2];
+	$Mes = $aDate[1];quí</p>";*/
+	/*if($Mes=="01"){
+		$Mes = 1;
+	}*/
+		$acumulador_cantidades = 0;
+		for($i=0;$i<=count($array_acumulativo_cantidades)-1;$i++){
+			$acumulador_cantidades = $acumulador_cantidades + $array_acumulativo_cantidades[$i][1];
+		}
+		//var_dump($acumulador_cantidades);
+		$consumo_virtual_acumulado[0][0] = $id;
+		$consumo_virtual_acumulado[0][1] = $acumulador_cantidades;
+		//var_dump($consumo_virtual_acumulado);
+		//var_dump($meses[$Mes]);
+		$sql2 = "SELECT ".$meses[$Mes]." FROM Insumos WHERE CodigoInsumo = $id AND Ano = $Ano";
+//		echo $sql2;
+		$res3 = executeSQL($sql2);
+		//var_dump($res3[0][0]);
+		$cantidad_disponible_insumo_virtual = $res3[0][0] - $consumo_virtual_acumulado[0][1];
+		/*echo "<p>".$res3[0][0]." - ".$consumo_virtual_acumulado[0][1]." = ".$cantidad_disponible_insumo_virtual."</p>";*/
+		//var_dump($res3);
+		//var_dump($cantidad_disponible_insumo_virtual);
+		if($cantidad_disponible_insumo_virtual<0){
+			//LOS QUE NO ESTAN DISPONIBLES
+			$return[0] = "El insumo: ".$id." Puede ser insuficiente";
+			$return[1] = $cantidad_disponible_insumo_virtual;
+			$return[2] = "si";
+			//echo "entré en 1";
+			return $return;
+		}else{
+			//LOS QUE ESTAN DISPONIBLES
+			$return[0] = null;
+			$return[1] = $cantidad_disponible_insumo_virtual;
+			$return[2] = "si";
+			//echo "entré en 2";
+			return $return;
+		}
+	}
+}
+
+function liquidar_ordenes($id_orden,$comentario_de_liquidacion,$cantidad,$liquidacion_forzada){
+	$dateC = @date("d-m-Y H:i:s");
+	$date = explode(" ", $dateC);
+	$aDate = explode("-", $date[0]);
+	$Ano = $aDate[2];
+	$Mes = $aDate[1];
+	if($Mes<=9){
+		$Mes = $aDate[1][1];
+	}
+	if($liquidacion_forzada=="si"){
+		$comentario_de_liquidacion = "Esta órden ha sido liquidada con producción 0 (cero) el día ".$date[0]." De manera automática debido a que no fue cerrada en el trancurso del més anterior";
+		$cantidad = 0;
+	}
+		//var_dump($id_orden);
+//AQUI NO VA EL ID DE ORDEN
+		$sql = "SELECT Cantidad,Formula FROM OrdenProduccion WHERE codigoOrdenProduccion = $id_orden";
+	//echo $sql;
+	$res1 = executeSQL($sql);
+		//var_dump($res1);
+		$formula = formulas::seleccionar_formulas($res1[0][1]);
+		//var_dump($formula);
+		//var_dump(count($formula));
+		for($i=0;$i<=count($formula)-1;$i++){
+			//echo "[".$i."][0]";
+			//var_dump($formula);
+			//echo "     ------     ";
+			//var_dump(count($formula));
+			//var_dump($formula[$i][0]);
+				if(($Mes=="1")&&($existencia_en_el_mes==null)){
+					//echo "uno";
+					$Mes = 12;
+					$Ano = $Ano - 1;
+					$flag = 1;
+				}
+				if(($Mes!="1")&&($existencia_en_el_mes==null)&&($flag!=1)){
+					//echo "dos";
+					$Mes = $Mes - 1;
+				}
+				//$existencia_en_el_mes = insumos::existencia_mes_liq($formula[$i][0],$Mes,$Ano);
+			//var_dump($formula[$i][1]);
+			$cantidad_actual_en_tabla_insumos = insumos::seleccionar_cantidades_por_id($formula[$i][0]);
+			$disponibilidad_de_material = $cantidad_actual_en_tabla_insumos[0][0]-($formula[$i][1]*$cantidad);
+			//echo "<p>".$cantidad_actual_en_tabla_insumos[0][0]."- (".$formula[$i][1]." * ".$cantidad.") = ".$disponibilidad_de_material."</p>";
+			//var_dump($disponibilidad_de_material);
+			if($disponibilidad_de_material<=0){
+				$negado[$i][0] = "si";
+				$negado[$i][1] = $formula[$i][0];
+				$negado[$i][2] = -$disponibilidad_de_material;
+				//return "<p>El id de insumo ".$formula[$i][0]." Está posiblemente faltando en el inventario en una cantidad de ".-$disponibilidad_de_material."</p>";
+			}else{
+				$negado[$i][0] = "no";
+				$negado[$i][1] = $formula[$i][0];
+				$negado[$i][2] = $disponibilidad_de_material;
+				//echo "<p>El id de insumo ".$formula[$i][0]." aquiii ".-$disponibilidad_de_material."</p>";
+			}
+		}
+		return $negado;
+	}
+
+function liquidar_inventario($array_de_liquidacion,$id_orden,$comentario_de_liquidacion,$cantidad,$codigo_de_producto,$liquidacion_forzada){
+			//Consulta a fecha de sistema {	
+	$dateC = @date("d-m-Y H:i:s");
+	$date = explode(" ", $dateC);
+	$aDate = explode("-", $date[0]);
+	$Ano = $aDate[2];
+	$Mes = $aDate[1];
+	if($aDate[1]<=9){
+		$Mes = $aDate[1][1];
+		echo $Mes;
+	}
+	$Ano_Anterior = $aDate[2] - 1;
+	// }
+	// Asignación de vector meses con los meses del año
+	$meses[0]="null";
+	$meses[1]="Enero";
+	$meses[2]="Febrero";
+	$meses[3]="Marzo";
+	$meses[4]="Abril";
+	$meses[5]="Mayo";
+	$meses[6]="Junio";
+	$meses[7]="Julio";
+	$meses[8]="Agosto";
+	$meses[9]="Septiembre";
+	$meses[10]="Octubre";
+	$meses[11]="Noviembre";
+	$meses[12]="Diciembre";
+	/*if($Mes=="01"){
+		$Mes = 1;
+	}*/
+
+
+
+	if($liquidacion_forzada=="si"){
+		$comentario_de_liquidacion = "Esta órden ha sido liquidada con producción 0 (cero) el día ".$date[0]." De manera automática debido a que no fue cerrada en el trancurso del més anterior";
+		$cantidad = 0;
+	}
+	$sql = "UPDATE OrdenProduccion SET comentariosLiquidacion = '$comentario_de_liquidacion',Estado='C',produccionReal=$cantidad WHERE codigoOrdenProduccion = '$id_orden'";
+	echo "<p> ".$sql."</p>";
+//PROBAAAAAAAAAAAAAAAR LAS DOS CONSULTAAAAASSSSSSSSSSS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//$result = executeSQL($sql);
+	for($i=0;$i<=count($array_de_liquidacion)-1;$i++){
+
+//var_dump($array_de_liquidacion[$i][1]);
+/*echo "<p>".$array_de_liquidacion[$i][1]."</p>";
+echo "<p>".$Mes."</p>";
+echo "<p>".$Ano."</p>";*/
+		$existencia_de_enero = insumos::existencia_mes($array_de_liquidacion[$i][1],$Mes,$Ano);
+		//echo dos;
+		//var_dump($existencia_de_enero);
+		if(($meses[$Mes]=="Enero")&&($existencia_de_enero==null)){
+			echo "uno";
+			$Mes = 12;
+			$Ano = $Ano - 1;
+			$flag = 1;
+		}
+		if(($meses[$Mes]!="Enero")&&($existencia_de_enero==null)&&($flag!=null)){
+			echo "dos";
+			$Mes = $Mes - 1;
+		}
+			$sqla = "UPDATE Insumos SET '".$meses[$Mes]."' = ".$array_de_liquidacion[$i][2]." WHERE CodigoInsumo = ".$array_de_liquidacion[$i][1]." AND Ano = $Ano";
+		echo "<p> ".$sqla."</p>";
+
+		//$resulta = executeSQL($sqla);
+	}
+//AGREGACIÓN DE PRODUCTO TERMINADO A LAS CORRESPONDIENTES TABLAS
+ $sql_formulas_ordenes_id = "SELECT Formula FROM OrdenProduccion WHERE codigoOrdenProduccion = ".$id_orden."";
+ $formula_orden = executeSQL($sql_formulas_ordenes_id);
+	$sql_Entradas_Emergentes_P = "INSERT INTO EntradasEmergentesInventarioProducto (codigoProducto,conceptoEntrada,cantidad,fecha,mes,ano,formula) VALUES (".$codigo_de_producto.",'Producción',".$cantidad.",'".$date[0]."',".$aDate[1].",".$aDate[2].",".$formula_orden[0][0].")";
+echo "<p> ".$sql_Entradas_Emergentes_P."</p>";
+		//$result_emergentes = executeSQL($sql_Entradas_Emergentes_P);
+	if($Mes==1){
+		//ES ENERO? REVISAR EXISTENCIAS PARA AÑOS ANTERIORES
+		$sql_validacion_de_año_anterior = "SELECT * FROM ProductoT WHERE CodigoProducto = ".$codigo_de_producto." AND Ano = ".$Ano_Anterior."";
+		//$result_anterior = executeSQL($sql_validacion_de_año_anterior);
+		echo "<p> ".$sql_validacion_de_año_anterior."</p>";
+		$sql_validacion_entradas_mes = "SELECT * FROM EntradasEmergentesInventarioProducto WHERE ano = ".$aDate[2]." AND mes = ".$aDate[1]."";
+		//$result_validar_entrada_mes = executeSQL($sql_validacion_entradas_mes);
+		echo "<p> ".$sql_validacion_entradas_mes."</p>";
+		if((count($result_anterior)==0)&&(count($result_validar_entrada_mes)==0)){
+			//NO HAY NADA EN EL AÑO ANTERIOR NI EN EL MES CONCURRENTE
+			//SE REEMPLAZA EL CONTENIDO
+			$sql_insert_productos = "";
+		}
+	}
+}
+
+
+}
+
+
+
+?>

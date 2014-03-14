@@ -1,0 +1,14 @@
+<table border=0>
+		<tr>
+			<td>Material: </td><td><? echo $_POST['insu'];?></td>
+		</tr>
+		<tr>
+			<td>Cantidad: </td><td><? echo $_POST['cant'];?></td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<input type=button id=saveP value="Guardar" onclick=addMatInv()>
+				<input type=button id=cancel2 value="Cancelar" onclick=cancelReg("2")>
+			</td>
+		</tr>
+	</table>

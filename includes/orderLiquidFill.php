@@ -1,0 +1,39 @@
+<? 
+include "../clases/users.php";
+include "../clases/productos.php";
+include "../clases/insumos.php";
+include "../clases/Bd.php";
+include "../clases/formulas.php";
+include "../clases/ordenes.php";
+$orden_Mes_Ano = ordenes::selectOrder(null,null,$_POST['id_a_liquidar'],5);
+if($orden_Mes_Ano[1][0][0]){?>
+	<tr>
+		<td>Nombre: </td>
+		<td>Código de orden de producción: </td>
+		<td>Código de producto: </td>
+		<td>Fecha de emisión de orden: </td>
+		<td>Cantidad: </td>
+		<td>Fórmula: </td>
+	</tr>
+<input type=hidden id=id_o value="<? echo $_POST['id_a_liquidar'];?>">
+	<?
+	echo "<tr><input type=hidden id=id_de_la_orden value=".$orden_Mes_Ano[0][0][0][0]."><td>".$orden_Mes_Ano[0][0][0][0]."</td>";
+	echo "<td>".$orden_Mes_Ano[1][0][0]."</td><input type=hidden id=codo_o value=".$orden_Mes_Ano[1][0][0].">";
+	echo "<td>".$orden_Mes_Ano[1][0][1]."</td><input type=hidden id=codp_o value=".$orden_Mes_Ano[1][0][1].">";
+	echo "<td>".$orden_Mes_Ano[1][0][2]."</td><input type=hidden id=date_o value=".$orden_Mes_Ano[1][0][2].">";
+	echo "<td>".$orden_Mes_Ano[1][0][3]."</td><input type=hidden id=cant_o value=".$orden_Mes_Ano[1][0][3].">";
+	echo "<td>".$orden_Mes_Ano[1][0][10]."</td><input type=hidden id=form_o value=".$orden_Mes_Ano[1][0][10]."><tr>";
+}
+?>
+<tr>
+	<td colspan=1>Producción real: </td><td colspan=4><input type=text id=produccion_real><td>
+</tr>
+<tr>
+	<td colspan=1>Comentarios: </td><td colspan=4><textarea rows=4 cols=20 id=comentarios_liquidacion class=iTR></textarea><td>
+</tr>
+<tr>
+	<td colspan=5>
+		<input type=button id=accept_l onclick=aceptar_liquidación() value=Aceptar>
+		<input type=button id=cancell_l onclick=cancelar_liquidación() value=Cancelar>
+	</td>
+<tr>

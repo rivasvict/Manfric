@@ -1,0 +1,250 @@
+<?
+session_start();
+include "../clases/users.php";
+include "../clases/productos.php";
+include "../clases/insumos.php";
+include "../clases/Bd.php";
+include "../clases/formulas.php";
+include "../clases/ordenes.php";
+if($_POST['regUser']){
+	$insert = users::InsertarEmpleado($_POST['regName'],$_POST['regLastN'],$_POST['regGen'],$_POST['regId'],$_POST['regBYear'],$_POST['regBMonth'],$_POST['regBDay'],$_POST['regPho'],$_POST['regAr'],$_POST['regPos'],$_POST['regTest'],$_POST['regOp'],$_POST['regCom']);
+}
+
+if($_POST['producto']){
+	$insert = productos::insertProductos($_POST['nameP'],$_POST['eneP'],$_POST['febP'],$_POST['marP'],$_POST['abrP'],$_POST['mayP'],$_POST['junP'],$_POST['julP'],$_POST['agoP'],$_POST['sepP'],$_POST['octP'],$_POST['novP'],$_POST['dicP']);
+	$arrayIng = json_decode(str_replace('\\', '', $_POST['ingr']));
+	$arrayCant = json_decode(str_replace('\\', '', $_POST['cant']));
+	$arrayForm[0] = $arrayIng;
+	$arrayForm[1] = $arrayCant;	
+	$CodigoProducto	= productos::selectId($_POST['nameP']);
+	if(($_SESSION['nE']=="new")&&($_SESSION['E']==null)){
+		$arrayForm[2] = $CodigoProducto[0][0];
+		$arrayForm[3] = "si";
+		$arrayForm[4] = "si";
+	}elseif(($_SESSION['nE']==null)&&($_SESSION['E']!=null)){
+		$insumoCantidad = formulas::seleccionar_formulas($_SESSION['A']);
+		for($i=0;$i<=count($arrayForm[0])-1;$i++){
+			$confirmacion[$i][0] = $arrayForm[0][$i];
+			$confirmacion[$i][1] = $arrayForm[1][$i];
+		}
+		//var_dump($confirmacion);
+		for($i=0;$i<=count($insumoCantidad)-1;$i++){
+			//echo "<p>es ".$confirmacion[$i][0]." = ".$insumoCantidad[$i][0]."? y ".$confirmacion[$i][1]." = ".$insumoCantidad[$i][1]."? y ".count($insumoCantidad)." = ".count($confirmacion)."?</p>";
+			if(($confirmacion[$i][0]==$insumoCantidad[$i][0])&&($confirmacion[$i][1]==$insumoCantidad[$i][1])&&(count($insumoCantidad)==count($confirmacion))){
+				$c[$i]="existe valor";
+			}
+		}
+		if((count($insumoCantidad)==count($c))){
+			$arrayForm[2] = $_SESSION['E'];
+			$arrayForm[3] = "no";
+			$arrayForm[4] = "no";
+			//echo "primera";
+		}else{
+			$_SESSION['E']=null;
+			$arrayForm[2] = $CodigoProducto[0][0];
+			$arrayForm[3] = "si";
+			$arrayForm[4] = "si";
+			//echo "segunda";
+		}
+		/*var_dump($insumoCantidad);
+		echo "   ---   ";*/
+		var_dump($arrayForm);
+	}
+	//var_dump($arrayForm[2]);
+	$form = formulas::insertForm($arrayForm,$CodigoProducto);	
+	$_SESSION['nE']=null;
+	$_SESSION['A']=null;
+	$_SESSION['E']=null;
+}
+
+if($_POST['formulas']){
+	$arrayIng = json_decode(str_replace('\\', '', $_POST['ingr']));
+	$arrayCant = json_decode(str_replace('\\', '', $_POST['cant']));
+	$arrayForm[0] = $arrayIng;
+	$arrayForm[1] = $arrayCant;	
+	$CodigoProducto	= productos::seleccionar_id();
+	$ProductoId = productos::selectId($_POST['nameProduct']);
+	//var_dump($_POST['nameProduct']);
+	//var_dump($CodigoProducto);
+	//$nuevoId = $CodigoProducto[count($CodigoProducto)-1][0]+1;
+	//var_dump($nuevoId);
+	if(($_SESSION['nE']=="new")&&($_SESSION['E']==null)){
+
+
+
+		//PUEBA DE FUEGO OJO
+		$formulasId = formulas::feormula_segun_producto($ProductoId[0][0]);
+		$explodear_tipo_formula = explode(" --- ",$formulasId[count($formulasId)-1][0]);
+		$nuevoId = $explodear_tipo_formula[1]+1;
+		//AQUI TERMINA LA PRUEBA DE FUEGO
+
+
+
+		$arrayForm[2] = $nuevoId;
+		$arrayForm[3] = "si";
+		$arrayForm[4] = "si";
+	}elseif(($_SESSION['nE']==null)&&($_SESSION['E']!=null)){
+		$insumoCantidad = formulas::seleccionar_formulas($_SESSION['A']);
+		for($i=0;$i<=count($arrayForm[0])-1;$i++){
+			$confirmacion[$i][0] = $arrayForm[0][$i];
+			$confirmacion[$i][1] = $arrayForm[1][$i];
+		}
+		//var_dump($confirmacion);
+		for($i=0;$i<=count($insumoCantidad)-1;$i++){
+			//echo "<p>es ".$confirmacion[$i][0]." = ".$insumoCantidad[$i][0]."? y ".$confirmacion[$i][1]." = ".$insumoCantidad[$i][1]."? y ".count($insumoCantidad)." = ".count($confirmacion)."?</p>";
+			if(($confirmacion[$i][0]==$insumoCantidad[$i][0])&&($confirmacion[$i][1]==$insumoCantidad[$i][1])&&(count($insumoCantidad)==count($confirmacion))){
+				$c[$i]="existe valor";
+			}
+		}
+		if((count($insumoCantidad)==count($c))){
+			$arrayForm[2] = $_SESSION['E'];
+			$arrayForm[3] = "no";
+			$arrayForm[4] = "no";
+			//echo "primera";
+		}else{
+			$_SESSION['E']=null;
+
+
+
+
+		//PUEBA DE FUEGO OJO
+		$formulasId = formulas::feormula_segun_producto($ProductoId[0][0]);
+		$explodear_tipo_formula = explode(" --- ",$formulasId[count($formulasId)-1][0]);
+		$nuevoId = $explodear_tipo_formula[1]+1;
+		//AQUI TERMINA LA PRUEBA DE FUEGO
+
+
+
+			$arrayForm[2] = $nuevoId;
+			$arrayForm[3] = "si";
+			$arrayForm[4] = "si";
+			//echo "segunda";
+		}
+		/*var_dump($insumoCantidad);
+		echo "   ---   ";*/
+		//var_dump($arrayForm);
+	}
+	/*var_dump($arrayForm);
+echo "<p>";
+	var_dump($ProductoId);
+echo "</p>";*/
+	$form = formulas::insertForm($arrayForm,$ProductoId);	
+	$_SESSION['nE']=null;
+	$_SESSION['A']=null;
+	$_SESSION['E']=null;
+}
+
+
+if($_POST['insumo']){
+	$insert = insumos::insertInsumos($_POST['nameI'],$_POST['exisI'],$_POST['costI'],$_POST['eneI'],$_POST['febI'],$_POST['marI'],$_POST['abrI'],$_POST['mayI'],$_POST['junI'],$_POST['julI'],$_POST['agoI'],$_POST['sepI'],$_POST['octI'],$_POST['novI'],$_POST['dicI']);
+}
+
+if($_POST['addInsum']){
+	$addInsum = insumos::adiccionarInsumo($_POST['insuA'],$_POST['cantA']);
+}
+
+if($_POST['oSave']){
+	$formula = formulas::seleccionar_formulas($_POST['oForm']);
+	//var_dump($formula);
+	for($i=0;$i<=count($formula)-1;$i++){
+		$cantidad_disponible_en_inventario = 0;
+		//echo "<p> ".$i."</p>";
+		$verificando_insumos_en_formulas = ordenes::seleccionar_id_de_material_en_orden_registrada($formula[$i][0]);
+		//var_dump($verificando_insumos_en_formulas!=null);
+		
+		if(($verificando_insumos_en_formulas!=null)&&($verificando_insumos_en_formulas[0]==null)&&($verificando_insumos_en_formulas[1])){
+			$cantidad_disponible_en_inventario = -$verificando_insumos_en_formulas[1]."";
+			//var_dump($cantidad_disponible_en_inventario);
+			$cantidad_actual_en_tabla_insumos[0][0] = 0;
+			//$flg="true";
+		}else{
+			$cantidad_disponible_en_inventario = $verificando_insumos_en_formulas[1]."";
+			//var_dump($cantidad_disponible_en_inventario);
+			$cantidad_actual_en_tabla_insumos[0][0] = 0;
+			//$flg="true";
+		}
+		//var_dump($cantidad_disponible_en_inventario);
+		if($cantidad_disponible_en_inventario==null){
+			$cantidad_actual_en_tabla_insumos = insumos::seleccionar_cantidades_por_id($formula[$i][0]);
+			$cantidad_disponible_en_inventario = 0;
+			//echo "Este es el ID de ".$formula[$i][0];
+		}
+		//var_dump($cantidad_disponible_en_inventario);
+		//$disponibilidad_def_de_inventario = $cantidad_actual_en_tabla_insumos[0][0] - $cantidad_disponible_en_inventario;
+
+
+		$disponibilidad_def_de_inventario = $cantidad_actual_en_tabla_insumos[0][0] - $cantidad_disponible_en_inventario;
+		//var_dump($disponibilidad_def_de_inventario);
+		/*echo "<p>";
+		var_dump($cantidad_actual_en_tabla_insumos[0][0]);
+		echo "</p>";
+		echo "<p>";
+		var_dump($cantidad_disponible_en_inventario);
+		echo "</p>";*/
+
+
+		/*if($disponibilidad_def_de_inventario<=0){
+			echo "El id de insumo ".$formula[$i][0]." Está posiblemente faltando en el inventario en una cantidad de ".-$disponibilidad_def_de_inventario;
+		}else{
+			
+		}
+		var_dump($disponibilidad_def_de_inventario);*/
+		//var_dump($cantidad_disponible_en_inventario);
+		/*echo "<p>";
+		var_dump($verificando_insumos_en_formulas);
+		echo "</p>";*/
+		//echo "<p>Insumo: ".$formula[$i][0]." -- Cantidad ".$formula[$i][1]*$_POST['oCantP']." </p>";
+		//var_dump($cantidad_actual_en_tabla_insumos[0][0]);
+		$disponibilidad_de_material = $disponibilidad_def_de_inventario-($formula[$i][1]*$_POST['oCantP']);
+		//var_dump($disponibilidad_def_de_inventario);
+		//var_dump($disponibilidad_de_material);
+		if($disponibilidad_de_material<=0){
+			echo "<p>El id de insumo ".$formula[$i][0]." Está posiblemente faltando en el inventario en una cantidad de ".-$disponibilidad_de_material."</p>";
+		}else{
+			
+		}
+		/*$cantidades_formula[$i][0] = $formula[$i][0];
+		$cantidades_formula[$i][1] = $formula[$i][1]*$_POST['oCantP'];
+		$agregar_orden_validador = insumos::select_cant_id($formula[$i][0]);
+		//var_dump($agregar_orden_validador);
+		if($agregar_orden_validador!=null){
+			$a_o_v[$i][0] = $agregar_orden_validador[$i][0];
+			$a_o_v[$i][1] = $agregar_orden_validador[$i][1];
+		}*/
+		//sleccionar insumos
+	}
+/*echo "<p>";
+var_dump($cantidades_formula);
+echo "</p>";
+echo "<p>";
+var_dump($a_o_v);
+echo "</p>";*/
+//AREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEGLAAAAAAAAAAAAAAAAAAAARRRRRRRR
+	//$addOrden = ordenes::insertOrder($_POST['oNameP'],$_POST['oCantP'],$_POST['oComm'],$_POST['oForm']);
+}
+
+if($_POST['liquidar_orden']){
+	//echo "<script type='text/javascript'>alert('hola');</script>";
+	$liquid = ordenes::liquidar_ordenes($_POST['oid'],$_POST['ocoml'],$_POST['oreal'],"no");
+	//var_dump($liquid);
+	$j=0;
+	for($i=0;$i<=count($liquid)-1;$i++){
+		if($liquid[$i][0]=="no"){
+			$j++;
+		}
+	}
+	if($j==count($liquid)){
+		//ESTA FUNCIÓN ES LA QUE LIQUIDA LAS ORDENES
+		$liquidacion =	ordenes::liquidar_inventario($liquid,$_POST['oid'],$_POST['ocoml'],$_POST['oreal'],"no");
+	}else{
+		for($i=0;$i<=count($liquid)-1;$i++){
+			if($liquid[$i][0]=="si"){
+				echo "<script type='text/javascript'>alert('El id de insumo ".$liquid[$i][1]." Está posiblemente faltando en el inventario en una cantidad de ".$liquid[$i][2]."');</script>";
+			}
+		}
+	}
+	//var_dump($liquid);
+//echo "asadssadfasdf";
+}
+
+?>

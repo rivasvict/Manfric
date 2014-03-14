@@ -1,0 +1,63 @@
+<? 
+session_start();
+include "../clases/users.php";
+include "../clases/productos.php";
+include "../clases/insumos.php";
+include "../clases/Bd.php";
+include "../clases/formulas.php";
+include "../clases/ordenes.php";
+$idInsumos = insumos::sId();
+if($_POST['selectCode']){?>
+<?
+$_SESSION['nE']=null;
+$_SESSION['E']=$_POST['selectCode'];
+$_SESSION['A']=$_POST['selectCode'];
+$insumoCantidad = formulas::seleccionar_formulas($_POST['selectCode']);
+//	var_dump($insumoCantidad);
+//	var_dump($idInsumos);
+for($i=0;$i<=count($insumoCantidad)-1;$i++){?>
+<tr><td><p><div id="mas<? echo $i;?>">
+	Insumo: 
+		<select name="insumSl" class=ins id="insumSel<? echo $i;?>">
+			<option value="<? echo $insumoCantidad[$i][0]?>"><? echo $insumoCantidad[$i][0]?></option>
+	<? for($j=0;$j<=count($idInsumos)-1;$j++){
+					if($insumoCantidad[$i][0]!=$idInsumos[$j][0]){?>
+						<option value="<? echo $idInsumos[$j][0]?>"><? echo $idInsumos[$j][0]?></option>
+		<? }?>
+	<? }?>
+Cantidad: <input type=text id="txt<? echo $i;?>" value="<? echo $insumoCantidad[$i][1]?>"> Kg
+<input type=button id="more<? echo $i;?>" value="+" onclick="agregarAFormulaE('<? echo $i;?>')">
+<input type=button id="menos<? echo $i;?>" value="-" onclick="quitarDeFormulaE('<? echo $i;?>')">
+</div></p></td>
+</tr>
+<? 
+//echo $i."=".count($insumoCantidad)-1;
+if($i==count($insumoCantidad)-1){?>
+	<tr><td><div id="mas<? echo count($insumoCantidad);?>"></div><td></tr>
+<? }?>
+<? }?>
+<? }elseif($_POST['number']){
+$_SESSION['nE']="new";
+$_SESSION['E']=null;?>
+
+
+
+<tr><td><p>
+Insumo: 
+		<select name="insumSl" class=ins id="insumSel<? echo $_POST['number'];?>">
+			<option value="null">--</option>
+	<? for($j=0;$j<=count($idInsumos)-1;$j++){?>
+						<option value="<? echo $idInsumos[$j][0]?>"><? echo $idInsumos[$j][0]?></option>	
+	<? }?>
+		</select>
+Cantidad: <input type=text id="txt<? echo $_POST['number'];?>"> Kg
+<input type=button id="more<? echo $_POST['number'];?>" value="+" onclick="agregarAFormulaE('<? echo $_POST['number'];?>')">
+<input type=button id="menos<? echo $_POST['number'];?>" value="-" onclick="quitarDeFormulaE('<? echo $_POST['number'];?>')"></p></td>
+</tr>
+<? 
+//echo $i."=".count($insumoCantidad)-1;?>
+<tr><td><div id="mas<? echo $_POST['number'] + 1;?>"></div><td></tr>
+
+
+
+<? }?>
